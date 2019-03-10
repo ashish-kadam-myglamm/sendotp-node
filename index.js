@@ -7,9 +7,10 @@ class SendOtp {
     /**
      * Creates a new SendOtp instance
      * @param {string} authKey Authentication key
+     * @param {boolean} isInternational send true if it is an international message, otherwise false.
      * @param {string, optional} messageTemplate
      */
-    constructor(authKey, messageTemplate) {
+    constructor(authKey, isInternational, messageTemplate) {
         this.authKey = authKey;
         if(messageTemplate){
             this.messageTemplate = messageTemplate;
@@ -17,6 +18,7 @@ class SendOtp {
             this.messageTemplate = "Your otp is {{otp}}. Please do not share it with anybody";
         }
         this.otp_expiry = 1440; //1 Day =1440 minutes
+        this.isInternational = isInternational
     }
 
     /**
@@ -63,6 +65,10 @@ class SendOtp {
                 otp: otp,
                 otp_expiry: this.otp_expiry
             };
+
+        if (this.isInternational) {
+            args.country=0
+        }
         return SendOtp.doRequest('get', "sendotp.php", args, callback);
     }
 
